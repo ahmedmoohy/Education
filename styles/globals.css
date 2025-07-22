@@ -2,10 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-gray-50 text-gray-900;
+/* Custom fonts for Apple-like feel */
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/SF-Pro-Display-Regular.otf') format('opentype'); /* You'd need to source these fonts */
+  font-weight: 400;
+  font-style: normal;
 }
 
-a {
-  @apply text-blue-600 hover:underline;
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/SF-Pro-Display-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/SF-Pro-Display-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+body {
+  @apply bg-background text-text font-sans antialiased;
+}
+
+/* Reusable button styles */
+.btn-primary {
+  @apply px-6 py-3 bg-primary text-white rounded-lg font-medium shadow-apple-light hover:bg-opacity-90 transition-colors duration-200;
+}
+
+.btn-secondary {
+  @apply px-6 py-3 bg-white text-primary border border-primary rounded-lg font-medium shadow-apple-light hover:bg-primary hover:text-white transition-colors duration-200;
+}
+
+/* Form input styles */
+.input-field {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
 }

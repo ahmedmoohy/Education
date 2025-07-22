@@ -1,20 +1,25 @@
 {
-  "name": "edu-platform",
-  "version": "1.0.0",
+  "name": "educational-platform",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "tailwindcss": "latest",
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "jsonwebtoken": "^9.0.2",
+    "js-cookie": "^3.0.5"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.21",
-    "tailwindcss": "^3.3.2"
+    "eslint": "latest",
+    "eslint-config-next": "latest"
   }
 }

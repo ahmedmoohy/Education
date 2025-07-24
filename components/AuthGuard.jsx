@@ -1,51 +1,54 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getAuthToken, verifyToken } from '../lib/auth';
-import { USER_ROLES } from '../lib/constants';
+import { verifyToken } from '../lib/auth'; // تم تحديث المسار
+import { PROTECTED_PATHS, AUTH_COOKIE_NAME } from '../lib/constants'; // تم تحديث المسار
+import { parse } from 'cookie'; // لإضافة قراءة الكوكيز في الواجهة الأمامية
 
-const AuthGuard = ({ children, allowedRoles }) => {
+const AuthGuard = ({ children, requiredRole }) => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [hasAccess, setHasAccess] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = getAuthToken();
-    if (!token) {
-      router.push('/login'); // No token, redirect to login
-      return;
-    }
+    const checkAuth = async () => {
+      // On the client side, cookies are read from document.cookie
+      const cookies = parse(document.cookie || '');
+      const token = cookies[AUTH_COOKIE_NAME];
 
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      router.push('/login'); // Invalid token, redirect to login
-      return;
-    }
-
-    if (allowedRoles && allowedRoles.length > 0) {
-      if (allowedRoles.includes(decoded.role)) {
-        setHasAccess(true);
-      } else if (decoded.role === USER_ROLES.ADMIN || decoded.role === USER_ROLES.SUPER_ADMIN) {
-        // Admins and Super Admins typically have access to all dashboards
-        setHasAccess(true);
-      } else {
-        router.push(`/${decoded.role}/dashboard`); // Redirect to their own dashboard if unauthorized
+      if (!token) {
+        router.replace('/login');
+        return;
       }
-    } else {
-      // If no specific roles are required, just check if authenticated
-      setHasAccess(true);
-    }
-    setLoading(false);
-  }, [router, allowedRoles]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[calc(100vh-128px)]">
-        <p className="text-lightText text-lg">Loading...</p>
-      </div>
-    );
+      const decodedToken = verifyToken(token); // This is still client-side validation, for UI
+
+      if (!decodedToken) {
+        // Token is invalid or expired
+        document.cookie = `${AUTH_COOKIE_NAME}=; Max-Age=0; path=/;`; // Clear invalid cookie
+        router.replace('/login');
+        return;
+      }
+
+      // Check if the user's role matches the required role for the page
+      if (requiredRole && decodedToken.role !== requiredRole) {
+        // Redirect to their respective dashboard if they don't have access to this specific page
+        const redirectPath = PROTECTED_PATHS[decodedToken.role] || '/';
+        router.replace(redirectPath);
+        return;
+      }
+
+      setIsAuthenticated(true);
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, [router, requiredRole]);
+
+  if (isLoading || !isAuthenticated) {
+    return <div>Loading...</div>; // Or a more sophisticated loading spinner
   }
 
-  return hasAccess ? children : null;
+  return <>{children}</>;
 };
 
 export default AuthGuard;

@@ -1,4 +1,4 @@
-import { registerUser, generateToken } from '../../../lib/auth';
+import { registerUser, generateToken } from '../../lib/auth';
 import { serialize } from 'cookie';
 
 export default function handler(req, res) {

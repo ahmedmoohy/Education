@@ -16,7 +16,13 @@
     "autoprefixer": "latest",
     "postcss": "latest",
     "jsonwebtoken": "^9.0.2",
-    "js-cookie": "^3.0.5"
+    "js-cookie": "^3.0.5""dependencies": {
+  "next": "15.4.2", // أو أي إصدار لديك
+  "react": "^18",
+  "react-dom": "^18",
+  "jsonwebtoken": "^9.0.2",
+  "cookie": "^0.6.0" // أضف هذا السطر أو تأكد من وجوده
+},
   },
   "devDependencies": {
     "eslint": "latest",

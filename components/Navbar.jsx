@@ -1,80 +1,85 @@
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { removeAuthCookie, getAuthToken, verifyToken } from '../lib/auth';
-import { USER_ROLES } from '../lib/constants';
+import { useEffect, useState } from 'react';
+import { verifyToken } from '../lib/auth'; // تم تحديث المسار
+import { AUTH_COOKIE_NAME, PROTECTED_PATHS } from '../lib/constants'; // تم تحديث المسار
+import { parse } from 'cookie'; // لإضافة قراءة الكوكيز في الواجهة الأمامية
 
-export default function Navbar() {
-  const router = useRouter();
+const Navbar = () => {
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
-    const token = getAuthToken();
-    if (token) {
-      const decoded = verifyToken(token);
-      if (decoded) {
-        setUser(decoded);
+    const checkAuth = () => {
+      const cookies = parse(document.cookie || '');
+      const token = cookies[AUTH_COOKIE_NAME];
+
+      if (token) {
+        const decoded = verifyToken(token); // Client-side check
+        if (decoded) {
+          setUser(decoded);
+        } else {
+          // Token invalid, clear it
+          document.cookie = `${AUTH_COOKIE_NAME}=; Max-Age=0; path=/;`;
+          setUser(null);
+        }
       } else {
-        removeAuthCookie(); // Token expired or invalid
+        setUser(null);
       }
-    } else {
-      setUser(null);
-    }
-  }, [router.asPath]); // Re-check on route change
+    };
+    checkAuth();
+
+    // Re-check auth on route change
+    const handleRouteChange = () => checkAuth();
+    router.events.on('routeChangeComplete', handleRouteChange);
+
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router]);
 
   const handleLogout = () => {
-    removeAuthCookie();
+    // Clear cookie on client side
+    document.cookie = `${AUTH_COOKIE_NAME}=; Max-Age=0; path=/;`;
+
+    // Optionally, call a logout API endpoint if you have server-side session management
+    // (Not strictly necessary for JWT unless you're blacklisting tokens)
+
     setUser(null);
     router.push('/login');
   };
 
   return (
-    <nav className="bg-white shadow-apple-light sticky top-0 z-50">
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-text hover:text-primary transition-colors">
-          EduPlatform
-        </Link>
-
-        <div className="flex items-center space-x-6">
-          {user ? (
-            <>
-              {user.role === USER_ROLES.STUDENT && (
-                <Link href="/student/dashboard" className="text-lightText hover:text-text transition-colors">
-                  Student Dashboard
-                </Link>
-              )}
-              {user.role === USER_ROLES.INSTRUCTOR && (
-                <Link href="/instructor/dashboard" className="text-lightText hover:text-text transition-colors">
-                  Instructor Dashboard
-                </Link>
-              )}
-              {user.role === USER_ROLES.ADMIN && (
-                <Link href="/admin/dashboard" className="text-lightText hover:text-text transition-colors">
-                  Admin Dashboard
-                </Link>
-              )}
-              {user.role === USER_ROLES.SUPER_ADMIN && (
-                <Link href="/super-admin/dashboard" className="text-lightText hover:text-text transition-colors">
-                  Super Admin Dashboard
-                </Link>
-              )}
-              <span className="text-lightText">Hello, {user.email} ({user.role})</span>
-              <button onClick={handleLogout} className="btn-secondary px-4 py-2 text-sm">
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="text-lightText hover:text-text transition-colors">
-                Login
+    <nav style={{ backgroundColor: '#333', padding: '10px 20px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Link href="/" style={{ color: 'white', textDecoration: 'none', fontSize: '1.2em' }}>
+        EduPlatform
+      </Link>
+      <div>
+        {user ? (
+          <>
+            <span style={{ marginRight: '15px' }}>Welcome, {user.email} ({user.role})</span>
+            {user.role && PROTECTED_PATHS[user.role] && (
+              <Link href={PROTECTED_PATHS[user.role]} style={{ color: 'white', textDecoration: 'none', marginRight: '15px' }}>
+                Dashboard
               </Link>
-              <Link href="/register" className="btn-primary px-4 py-2 text-sm">
-                Register
-              </Link>
-            </>
-          )}
-        </div>
+            )}
+            <button onClick={handleLogout} style={{ background: 'none', border: '1px solid white', color: 'white', padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link href="/login" style={{ color: 'white', textDecoration: 'none', marginRight: '15px' }}>
+              Login
+            </Link>
+            <Link href="/register" style={{ color: 'white', textDecoration: 'none' }}>
+              Register
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );
-}
+};
+
+export default Navbar;

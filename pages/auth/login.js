@@ -1,4 +1,4 @@
-import { findUserByEmail, generateToken } from '../../../lib/auth';
+import { findUserByEmail, generateToken } from '../../lib/auth';
 import { serialize } from 'cookie'; // For setting httpOnly cookie
 
 export default function handler(req, res) {

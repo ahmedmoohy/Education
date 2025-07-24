@@ -1,34 +1,56 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import styles from '../styles/Home.module.css'; // قد تحتاج لإنشاء هذا الملف في مجلد styles
 
 export default function Home() {
   return (
-    <div className="min-h-[calc(100vh-128px)] flex flex-col items-center justify-center p-8 bg-background text-center">
+    <div className={styles.container}>
       <Head>
-        <title>EduPlatform - Home</title>
-        <meta name="description" content="Welcome to the educational platform!" />
+        <title>Educational Platform</title>
+        <meta name="description" content="Welcome to the Educational Platform" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="bg-white rounded-xl shadow-apple-medium p-10 max-w-2xl w-full">
-        <h1 className="text-5xl font-bold text-text mb-6">
-          Learn, Teach, Grow.
+      <main className={styles.main}>
+        <h1 className={styles.title}>
+          Welcome to the <a href="#">Educational Platform!</a>
         </h1>
-        <p className="text-xl text-lightText mb-10 leading-relaxed">
-          Your comprehensive platform for education. Discover courses, manage learning, and inspire students.
+
+        <p className={styles.description}>
+          Get started by logging in or registering.
         </p>
 
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 justify-center">
-          <Link href="/login" className="btn-primary">
-            Student Login
+        <div className={styles.grid}>
+          <Link href="/login" className={styles.card}>
+            <h2>Student Login &rarr;</h2>
+            <p>Access your student dashboard.</p>
           </Link>
-          <Link href="/instructor/login" className="btn-secondary"> {/* Assuming instructors use the same login page for now */}
-            Instructor Login
+
+          <Link href="/login" className={styles.card}>
+            <h2>Instructor Login &rarr;</h2>
+            <p>Manage your courses and students.</p>
+          </Link>
+
+          <Link href="/register" className={styles.card}>
+            <h2>Register Now &rarr;</h2>
+            <p>Create a new account.</p>
           </Link>
         </div>
-        <p className="mt-8 text-lightText">
-          New here? <Link href="/register" className="text-primary hover:underline">Register Now</Link>
-        </p>
-      </div>
+      </main>
+
+      <footer className={styles.footer}>
+        <a
+          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by{' '}
+          <span className={styles.logo}>
+            {/* يمكنك استبدال هذا بشعار أو نص */}
+            Vercel
+          </span>
+        </a>
+      </footer>
     </div>
   );
 }

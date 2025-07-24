@@ -14,9 +14,24 @@
     "react-dom": "^18",
     "jsonwebtoken": "^9.0.2",
     "cookie": "^0.6.0"
+    "devDependencies": {
+  "eslint": "^8",
+  "eslint-config-next": "14.2.5",
+  "tailwindcss": "^3.4.1",     // أضف هذا السطر
+  "postcss": "^8.4.38",        // أضف هذا السطر أيضاً (غالباً مطلوب مع Tailwind)
+  "autoprefixer": "^10.4.19"   // وأيضاً هذا
+}
+
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "14.2.5"
+    "eslint-config-next": "14.2.5""devDependencies": {
+  "eslint": "^8",
+  "eslint-config-next": "14.2.5",
+  "tailwindcss": "^3.4.1",     // أضف هذا السطر
+  "postcss": "^8.4.38",        // أضف هذا السطر أيضاً (غالباً مطلوب مع Tailwind)
+  "autoprefixer": "^10.4.19"   // وأيضاً هذا
+}
+
   }
 }

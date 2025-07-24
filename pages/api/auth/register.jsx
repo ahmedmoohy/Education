@@ -2,9 +2,8 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { setAuthCookie } from '../lib/auth';
 import { USER_ROLES } from '../lib/constants';
-
+import { setAuthCookie } from '../../lib/auth'; // لاحظ إضافة نقطة ونقطتين إضافيتين
 export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
